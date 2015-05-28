@@ -4,6 +4,8 @@ import gui.DamaGUI;
 
 import java.util.*;
 
+import javax.print.PrintService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class Game {
+	/** Logger object for logging. */
 	private static Logger	logger = LoggerFactory.getLogger(DamaGUI.class);
 	/** The game table. */
 	private int[][] table;
@@ -106,6 +109,7 @@ public class Game {
 			if(p1signs.contains(getTableVal(a))) { // P1
 				if(b.getX() > a.getX() 
 						|| b.getX() == 0
+						|| b.getX() == 7
 						|| b.getY() == 0
 						|| b.getY() == 7)
 					return null;
@@ -130,14 +134,17 @@ public class Game {
 			} else { // P2
 				if(b.getX() < a.getX() 
 						|| b.getX() == 0
+						|| b.getX() == 7
 						|| b.getY() == 0
 						|| b.getY() == 7)
 					return null;
 				
 				if(b.getY() < a.getY()  && Math.abs(a.getY() - b.getY()) == 1) {
 					if(Math.abs(a.getX() - b.getX()) == 1) {
-						Coordinate c = new Coordinate(b.getX() + 1, b.getY() - 1);
-						if(getTableVal(c) == 0) return c;
+						if(b.getX() + 1 < 8) {
+							Coordinate c = new Coordinate(b.getX() + 1, b.getY() - 1);
+							if(getTableVal(c) == 0) return c;
+						}
 						else return null;
 					}
 				} else if(b.getY() > a.getY()  && Math.abs(a.getY() - b.getY()) == 1) {
@@ -158,9 +165,13 @@ public class Game {
 				return null;
 			
 			if(p1signs.contains(getTableVal(a))) { // P1
-				if(a.getX() < 7 && a.getY() > 0) { // tábla alja fele balra
+				if(a.getX() < 7 && a.getY() > 0
+						&& b.getX() > a.getX() && b.getY() < a.getY()) { // le balra
 					int i, j;
-					for(i = a.getX(), j = a.getY(); i < 7 && j > 0; i++, j--) {
+					for(i = a.getX() + 1, j = a.getY() - 1; i < 7 && j > 0; i++, j--) {
+						if(getTableVal(new Coordinate(i, j)) == 1
+								|| getTableVal(new Coordinate(i, j)) == 11)
+							break;
 						Coordinate c = new Coordinate(i + 1, j - 1);
 						if((getTableVal(new Coordinate(i, j)) == 2 
 							|| getTableVal(new Coordinate(i, j)) == 21)
@@ -169,9 +180,13 @@ public class Game {
 						}
 					}
 				} 
-				if(a.getX() > 0 && a.getY() > 0) { // tábla teteje fele balra
+				if(a.getX() > 0 && a.getY() > 0
+						&& b.getY() < a.getY() && b.getX() < a.getX()) { // fel balra
 					int i, j;
-					for(i = a.getX(), j = a.getY(); i > 0 && j > 0; i--, j--) {
+					for(i = a.getX() - 1, j = a.getY() - 1; i > 0 && j > 0; i--, j--) {
+						if(getTableVal(new Coordinate(i, j)) == 1
+								|| getTableVal(new Coordinate(i, j)) == 11)
+							break;
 						Coordinate c = new Coordinate(i - 1, j - 1);
 						if((getTableVal(new Coordinate(i, j)) == 2 
 							|| getTableVal(new Coordinate(i, j)) == 21) 
@@ -180,9 +195,13 @@ public class Game {
 						}
 					}
 				}
-				if(a.getX() > 0 && a.getY() < 7) { // tábla teteje fele jobbra
+				if(a.getX() > 0 && a.getY() < 7
+						&& b.getX() < a.getX() && b.getY() > a.getY()) { // fel jobbra
 					int i, j;
-					for(i = a.getX(), j = a.getY(); i > 0 && j < 7; i--, j++) {
+					for(i = a.getX() - 1, j = a.getY() + 1; i > 0 && j < 7; i--, j++) {
+						if(getTableVal(new Coordinate(i, j)) == 1
+								|| getTableVal(new Coordinate(i, j)) == 11)
+							break;
 						Coordinate c = new Coordinate(i - 1, j + 1);
 						if((getTableVal(new Coordinate(i, j)) == 2 
 							|| getTableVal(new Coordinate(i, j)) == 21) 
@@ -191,9 +210,13 @@ public class Game {
 						}
 					}
 				} 
-				if(a.getY() < 7 && a.getX() < 7) { // tábla alja fele jobbra
+				if(a.getY() < 7 && a.getX() < 7
+						&& b.getX() > a.getX() && b.getY() > a.getX()) { // le jobbra
 					int i, j;
-					for(i = a.getX(), j = a.getY(); i < 7 && j < 7; i++, j++) {
+					for(i = a.getX() + 1, j = a.getY() + 1; i < 7 && j < 7; i++, j++) {
+						if(getTableVal(new Coordinate(i, j)) == 1
+								|| getTableVal(new Coordinate(i, j)) == 11)
+							break;
 						Coordinate c = new Coordinate(i + 1, j + 1);
 						if((getTableVal(new Coordinate(i, j)) == 2 
 							|| getTableVal(new Coordinate(i, j)) == 21) 
@@ -204,9 +227,13 @@ public class Game {
 				}
 				return null;
 			} else if(!p1signs.contains(getTableVal(a))) { // P2
-				if(a.getX() < 7 && a.getY() > 0) { // tábla alja fele balra
+				if(a.getX() < 7 && a.getY() > 0
+						&& b.getX() > a.getX() && b.getY() < a.getY()) { // tábla alja fele balra
 					int i, j;
-					for(i = a.getX(), j = a.getY(); i < 7 && j > 0; i++, j--) {
+					for(i = a.getX() + 1, j = a.getY() - 1; i < 7 && j > 0; i++, j--) {
+						if(getTableVal(new Coordinate(i, j)) == 2
+								|| getTableVal(new Coordinate(i, j)) == 21)
+							break;
 						Coordinate c = new Coordinate(i + 1, j - 1);
 						if((getTableVal(new Coordinate(i, j)) == 1 
 							|| getTableVal(new Coordinate(i, j)) == 11) 
@@ -215,9 +242,14 @@ public class Game {
 						}
 					}
 				}
-				if(a.getX() > 0 && a.getY() > 0) { // tábla teteje fele balra
+				if(a.getX() > 0 && a.getY() > 0
+						&& b.getY() < a.getY() && b.getX() < a.getX()) { // tábla teteje fele balra
+					
 					int i, j;
-					for(i = a.getX(), j = a.getY(); i > 0 && j > 0; i--, j--) {
+					for(i = a.getX() - 1, j = a.getY() - 1; i > 0 && j > 0; i--, j--) {
+						if(getTableVal(new Coordinate(i, j)) == 2
+								|| getTableVal(new Coordinate(i, j)) == 21)
+							break;
 						Coordinate c = new Coordinate(i - 1, j - 1);
 						if((getTableVal(new Coordinate(i, j)) == 1 
 							|| getTableVal(new Coordinate(i, j)) == 11) 
@@ -226,9 +258,13 @@ public class Game {
 						}
 					}
 				}
-				if(a.getX() > 0 && a.getY() < 7) { // tábla teteje fele jobbra
+				if(a.getX() > 0 && a.getY() < 7
+						&& b.getX() < a.getX() && b.getY() > a.getY()) { // tábla teteje fele jobbra
 					int i, j;
-					for(i = a.getX(), j = a.getY(); i > 0 && j < 7; i--, j++) {
+					for(i = a.getX() - 1, j = a.getY() + 1; i > 0 && j < 7; i--, j++) {
+						if(getTableVal(new Coordinate(i, j)) == 2
+								|| getTableVal(new Coordinate(i, j)) == 21)
+							break;
 						Coordinate c = new Coordinate(i - 1, j + 1);
 						if((getTableVal(new Coordinate(i, j)) == 1 
 							|| getTableVal(new Coordinate(i, j)) == 11) 
@@ -237,9 +273,13 @@ public class Game {
 						}
 					}
 				}
-				if(a.getY() < 7 && a.getX() < 7) { // tábla alja fele jobbra
+				if(a.getY() < 7 && a.getX() < 7
+						&& b.getX() > a.getX() && b.getY() > a.getX()) { // tábla alja fele jobbra
 					int i, j;
-					for(i = a.getX(), j = a.getY(); i < 7 && j < 7; i++, j++) {
+					for(i = a.getX() + 1, j = a.getY() + 1; i < 7 && j < 7; i++, j++) {
+						if(getTableVal(new Coordinate(i, j)) == 2
+								|| getTableVal(new Coordinate(i, j)) == 21)
+							break;
 						Coordinate c = new Coordinate(i + 1, j + 1);
 						if((getTableVal(new Coordinate(i, j)) == 1 
 							|| getTableVal(new Coordinate(i, j)) == 11) 
@@ -260,51 +300,7 @@ public class Game {
 	 * @param ap actal player
 	 * @param nap not actual player
 	 */
-	public boolean doHit() {
-		Coordinate target = null;
-		for(Coordinate ac : getActualPlayer().getPlacedPieces()) {
-			for(Coordinate nac : getNotActualPlayer().getPlacedPieces()) {
-				if((target = isHitable(ac, nac)) != null) {
-					/*System.out.println("before:");
-					pgt();
-					System.out.println(String.format("Hit[na%s, nac%s, target%s]", ac, nac, target));
-					System.out.println(String.format("Val[   %d,     %d,      %d]\n", getTableVal(ac), 
-							getTableVal(nac), getTableVal(target)));*/
-					logger.info(String.format("%s - Hit[From%s, This%s, Here%s]", getActualPlayer().getName(), ac, nac, target));
-					setTableVal(target, getTableVal(ac));
-					setTableVal(ac, 0);
-					setTableVal(nac, 0);
-					if(!isDama(target))
-						turnToDama(target);
-							
-					getActualPlayer().removeCoordinateFromList(ac);
-					getActualPlayer().getPlacedPieces().add(target);
-					getNotActualPlayer().getPlacedPieces().remove(nac);
-					/*System.out.println("after:");
-					pgt();
-					System.out.println();*/
-					/*int i = 0;
-					System.out.println("==========================");
-					System.out.println(getActualPlayer().getName() + " pieces:");
-					for (Coordinate c : getActualPlayer().getPlacedPieces()) {
-						System.out.println(++i + ". " +c);
-					}
-					
-					i = 0;
-					System.out.println(getNotActualPlayer().getName() + " pieces:");
-					for (Coordinate c : getNotActualPlayer().getPlacedPieces()) {
-						System.out.println(++i + ". " +c);
-					}
-					System.out.println("==========================\n");
-					System.out.println(String.format("Hit[na%s, nac%s, target%s]", ac, nac, target));
-					System.out.println(String.format("Val[   %d,     %d,      %d]", getTableVal(ac), 
-							getTableVal(nac), getTableVal(target)));*/
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+	
 	
 	/**
 	 * Decides wheter a piece can be moved from first position to second.
@@ -549,6 +545,9 @@ public class Game {
 				{ 3, 0, 3, 0, 3, 0, 3, 0 } });
 	}
 	
+	/**
+	 * Prints the game table.
+	 */
 	public void pgt() {
 		for (int i = 0; i < table.length; i++) {
 			System.out.print("{ ");

@@ -6,15 +6,18 @@ import model.*;
 
 @SuppressWarnings("serial")
 public class DamaButton extends JButton {
+	/** Decides if button clicked or not. */
 	private boolean selected;
+	/** Coordinate of the button on the game field. */
 	private Coordinate coordinate;
 	
+	/** Constructor */
 	public DamaButton(Coordinate c) {
 		super("");
 		this.selected = false;
 		this.coordinate = c;
 	}
-
+		
 	public boolean isSelected() {
 		return selected;
 	}
@@ -40,6 +43,4 @@ public class DamaButton extends JButton {
 		return "DamaButton [selected=" + selected + ", coordinate="
 				+ coordinate + "]";
 	}
-	
-	
 }

@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,20 +37,37 @@ import org.slf4j.LoggerFactory;
 
 
 
+
+
+
+
+
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class DamaGUI extends JFrame {
+	/** Logger object, for logging. */
 	private static Logger	logger = LoggerFactory.getLogger(DamaGUI.class);
+	/** Main content pane. */
 	private JPanel 	contentPane;
+	/** Content pane for game buttons. */
 	private JPanel 	damaField;
+	/** Label for notifications. */
 	private JLabel 	notification;
+	/** List for game buttons. */
 	private static List<DamaButton>	buttons;
+	/** Size of the buttons. */
 	public int 	buttonSize;
+	/** Offset from the edge of the window. */
 	public int 	offset;
+	/** Game state. */
 	private static Game	g;
+	/** Game database services. */
 	private static DamaService ds;
+	/** Window frame. */
 	private static DamaGUI frame;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -69,22 +87,172 @@ public class DamaGUI extends JFrame {
 	}
 	
 	/**
+	 * Does a mandatory hit for the actual player.
+	 * 
+	 * @return last stepped coordinate
+	 */
+	public Coordinate doHit() {
+//		Thread t = new Thread(new Runnable() {
+//			public void run() {
+//				
+//			}
+//		});
+//		
+//		try {
+//			t.run();
+//			t.wait();
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//		}
+		try {
+			Thread.sleep(5);
+			Coordinate target = null;
+			for(Coordinate ac : g.getActualPlayer().getPlacedPieces()) {
+				for(Coordinate nac : g.getNotActualPlayer().getPlacedPieces()) {
+					if((target = g.isHitable(ac, nac)) != null) {
+						
+						/*System.out.println("before:");
+						pgt();
+						System.out.println(String.format("Hit[na%s, nac%s, target%s]", ac, nac, target));
+						System.out.println(String.format("Val[   %d,     %d,      %d]\n", getTableVal(ac), 
+								getTableVal(nac), getTableVal(target)));*/
+						logger.info(String.format("%s - Hit[From%s, This%s, Here%s]", g.getActualPlayer().getName(), ac, nac, target));
+						g.setTableVal(target, g.getTableVal(ac));
+						g.setTableVal(ac, 0);
+						g.setTableVal(nac, 0);
+						updateButtonIcons();
+						damaField.updateUI();
+						contentPane.updateUI();
+						t.run();
+//						t.start();
+						t.sleep(100);
+						Thread.sleep(100);
+						if(!g.isDama(target))
+							g.turnToDama(target);
+								
+						g.getActualPlayer().removeCoordinateFromList(ac);
+						g.getActualPlayer().getPlacedPieces().add(target);
+						g.getNotActualPlayer().getPlacedPieces().remove(nac);
+						/*System.out.println("after:");
+						pgt();
+						System.out.println();*/
+						/*int i = 0;
+						System.out.println("==========================");
+						System.out.println(getActualPlayer().getName() + " pieces:");
+						for (Coordinate c : getActualPlayer().getPlacedPieces()) {
+							System.out.println(++i + ". " +c);
+						}
+						
+						i = 0;
+						System.out.println(getNotActualPlayer().getName() + " pieces:");
+						for (Coordinate c : getNotActualPlayer().getPlacedPieces()) {
+							System.out.println(++i + ". " +c);
+						}
+						System.out.println("==========================\n");
+						System.out.println(String.format("Hit[na%s, nac%s, target%s]", ac, nac, target));
+						System.out.println(String.format("Val[   %d,     %d,      %d]", getTableVal(ac), 
+								getTableVal(nac), getTableVal(target)));*/
+						return target;
+					}
+				}
+			}
+			return null;
+		} catch (IllegalThreadStateException e) {
+			e.printStackTrace();
+			return null;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		} 
+	}
+	
+	static Thread t;
+	
+	/**
 	 * Create the frame.
 	 */
 	public DamaGUI() {
 		this.buttonSize = 56;
 		this.offset = 25;
 		g = new Game();
+		g.setTable(new int[][] { 
+				{ 21, 3, 21, 3, 21, 3, 21, 3 },
+				{ 3, 2, 3, 2, 3, 2, 3, 2 },
+				{ 2, 3, 2, 3, 2, 3, 2, 3 },
+				{ 3, 0, 3, 0, 3, 0, 3, 0 }, 
+				{ 0, 3, 0, 3, 0, 3, 0, 3 },
+				{ 3, 1, 3, 1, 3, 1, 3, 1 }, 
+				{ 1, 3, 1, 3, 1, 3, 1, 3 },
+				{ 3, 11, 3, 11, 3, 11, 3, 11 } }
+				
+				);
 		ds = new DamaService();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
+		
+		t = new Thread( new Runnable() {
+			public void run() {
+				for (DamaButton damaButton : buttons)	{
+					int value = g.getTableVal(damaButton.getCoordinate());
+					if (value == 0) {
+						damaButton.setIcon(
+								new ImageIcon(getClass().getClassLoader().getResource(
+										"Empty.png")));
+					} else if (value == 3) {
+						damaButton.setIcon(
+								new ImageIcon(getClass().getClassLoader().getResource(
+										"Unstepable.png")));
+					} else if (value == 2) {
+						if (damaButton.isSelected()) {
+							damaButton.setIcon(
+									new ImageIcon(getClass().getClassLoader()
+											.getResource("W-highlight.png")));
+						} else {
+							damaButton.setIcon(
+									new ImageIcon(getClass().getClassLoader()
+											.getResource("W.png")));
+						}
+					} else if (value == 21) {
+						if (damaButton.isSelected()) {
+							damaButton.setIcon(
+									new ImageIcon(getClass().getClassLoader()
+											.getResource("W-dama-highlight.png")));
+						} else {
+							damaButton.setIcon(
+									new ImageIcon(getClass().getClassLoader()
+											.getResource("W-dama.png")));
+						}
+					} else if (value == 1) {
+						if (damaButton.isSelected()) {
+							damaButton.setIcon(
+									new ImageIcon(getClass().getClassLoader()
+											.getResource("D-highlight.png")));
+						} else {
+							damaButton.setIcon(
+									new ImageIcon(getClass().getClassLoader()
+											.getResource("D.png")));
+						}
+					} else if (value == 11) {
+						if (damaButton.isSelected()) {
+							damaButton.setIcon(
+									new ImageIcon(getClass().getClassLoader()
+											.getResource("D-dama-highlight.png")));
+						} else {
+							damaButton.setIcon(
+									new ImageIcon(getClass().getClassLoader()
+											.getResource("D-dama.png")));
+						}
+					}
+				}
+			}
+		});
+		/*addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				ds.closeDatabaseConnection();
 			}
 		});
 		
-		addKeyListener(new KeyListener() {
+		/*addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent e) {}
 			public void keyReleased(KeyEvent e) {}
 			public void keyPressed(KeyEvent e) {
@@ -93,9 +261,9 @@ public class DamaGUI extends JFrame {
 					System.exit(0);
 				}
 			}
-		});
+		})*/;
 		setBounds(0, 0, ((buttonSize * 8) + (offset * 2)) + 0,
-				((buttonSize * 9) + (offset * 2))+offset+20);
+				((buttonSize * 9) + (offset * 2))+offset);
 		
 		JMenuBar menuBar = new JMenuBar();
 //		menuBar.add(Box.createRigidArea(new Dimension(100,25)));
@@ -304,29 +472,10 @@ public class DamaGUI extends JFrame {
 						notification.setText(g.getActualPlayer().getName() + " won!");
 						logger.info(g.getNotActualPlayer().getName() + " won!");
 					}
-					if(g.isGameOver()) { 
+					if(g.isGameOver()) {
 						return;
 					}
-					
 					DamaButton actButton = (DamaButton)e.getSource();
-					DamaButton prevButton = getPreviousClickedButton();
-					Player ap = g.getActualPlayer();
-					Player nap = g.getNotActualPlayer();
-					List<Integer> signs = new ArrayList<Integer>(Arrays.asList(1, 11, 2, 21));
-					List<Integer> p1signs = new ArrayList<Integer>(Arrays.asList(1, 11));
-					List<Integer> p2signs = new ArrayList<Integer>(Arrays.asList(2, 21));
-					String apName = g.getActualPlayer().getName();
-					String napName = g.getActualPlayer().getName();
-					int aSign = -1;
-					int pSign = -1;
-					Coordinate aCoord = null;
-					Coordinate pCoord = null;
-					if(getPreviousClickedButton() != null ) {
-						pSign = g.getTableVal(getPreviousClickedButton().getCoordinate());
-						pCoord = getPreviousClickedButton().getCoordinate();
-						aSign = g.getTableVal(actButton.getCoordinate());
-						aCoord = actButton.getCoordinate();
-					} 
 					
 					
 					if(getPreviousClickedButton() == null 
@@ -334,18 +483,6 @@ public class DamaGUI extends JFrame {
 								|| g.getTableVal(actButton.getCoordinate()) == 3)) {
 						return;
 					}
-					
-					/*if(pSign == 3) {
-						clearPreviousClickedButton();
-						updateButtonIcons();
-						return;
-					}
-					
-					/*if((getPreviousClickedButton() == null && aSign == 0)) {
-						clearPreviousClickedButton();
-						updateButtonIcons();
-						return;
-					}*/
 					
 					/* kijelölés */
 					if(getPreviousClickedButton() == null) {
@@ -373,51 +510,46 @@ public class DamaGUI extends JFrame {
 							updateButtonIcons();
 							//pgt();
 							g.switchPlayer();
-							while(g.doHit()) {
-								if(g.getActualPlayer().getPiecesNumber() == 0) {
-									g.getNotActualPlayer().setWon(true);
-									g.setGameOver(true);
-									notification.setText(g.getNotActualPlayer().getName() + " won!");
-								}
-									
-								if(g.getNotActualPlayer().getPiecesNumber() == 0) {
-									g.getActualPlayer().setWon(true);
-									g.setGameOver(true);
-									notification.setText(g.getActualPlayer().getName() + " won!");
-								}
-										
-//								System.out.println(g.getActualPlayer().getName() + " hit" );
-								
-								updateButtonIcons();
-								g.switchPlayer();
-								notification.setText(g.getActualPlayer().getName() + "'s turn");
-								logger.info(g.getActualPlayer().getName() + "'s turn");
-								
-								/*synchronized (getGui()) {
-									try {
-										getGui().wait(100);
-									} catch (InterruptedException e1) {
-										e1.printStackTrace();
+							try {
+								while(true) {
+									Coordinate lastTarget;
+//									System.out.println(g.isDama(getPreviousClickedButton().getCoordinate()));
+									if((lastTarget = doHit()) != null) {
+//											t.start();
+//										System.out.println(lastTarget);
+										updateButtonIcons();
+									} else {
+										break;
 									}
-								}*/
-							}
-							
-							if(g.getActualPlayer().getPiecesNumber() == 0) {
-								g.getNotActualPlayer().setWon(true);
-								g.setGameOver(true);
-								notification.setText(g.getNotActualPlayer().getName() + " won!");
-							}
-								
-							if(g.getNotActualPlayer().getPiecesNumber() == 0) {
-								g.getActualPlayer().setWon(true);
-								g.setGameOver(true);
-								notification.setText(g.getActualPlayer().getName() + " won!");
+									/*if(!g.isDama(lastTarget))
+										while(doHit() != null) {;}*/
+									updateButtonIcons();
+									Thread.sleep(100);
+									g.switchPlayer();
+									notification.setText(g.getActualPlayer().getName() + "'s turn");
+									logger.info(g.getActualPlayer().getName() + "'s turn");
+								}
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
 							}
 							notification.setText(g.getActualPlayer().getName() + "'s turn");
 						} else {
 							notification.setText("Invalid step.");
 							logger.warn("Invalid step");
 						}
+					}
+					if(g.getActualPlayer().getPiecesNumber() == 0) {
+						g.getNotActualPlayer().setWon(true);
+						g.setGameOver(true);
+						notification.setText(g.getNotActualPlayer().getName() + " won!");
+						logger.info(g.getNotActualPlayer().getName() + " won!");
+					}
+						
+					if(g.getNotActualPlayer().getPiecesNumber() == 0) {
+						g.getActualPlayer().setWon(true);
+						g.setGameOver(true);
+						notification.setText(g.getActualPlayer().getName() + " won!");
+						logger.info(g.getNotActualPlayer().getName() + " won!");
 					}
 					//updateButtonIcons();
 				}
@@ -465,58 +597,6 @@ public class DamaGUI extends JFrame {
 	 * Updates every button icon.
 	 */
 	public void updateButtonIcons() {
-		for (DamaButton damaButton : buttons)	{
-			int value = g.getTableVal(damaButton.getCoordinate());
-			if (value == 0) {
-				damaButton.setIcon(
-						new ImageIcon(getClass().getClassLoader().getResource(
-								"Empty.png")));
-			} else if (value == 3) {
-				damaButton.setIcon(
-						new ImageIcon(getClass().getClassLoader().getResource(
-								"Unstepable.png")));
-			} else if (value == 2) {
-				if (damaButton.isSelected()) {
-					damaButton.setIcon(
-							new ImageIcon(getClass().getClassLoader()
-									.getResource("W-highlight.png")));
-				} else {
-					damaButton.setIcon(
-							new ImageIcon(getClass().getClassLoader()
-									.getResource("W.png")));
-				}
-			} else if (value == 21) {
-				if (damaButton.isSelected()) {
-					damaButton.setIcon(
-							new ImageIcon(getClass().getClassLoader()
-									.getResource("W-dama-highlight.png")));
-				} else {
-					damaButton.setIcon(
-							new ImageIcon(getClass().getClassLoader()
-									.getResource("W-dama.png")));
-				}
-			} else if (value == 1) {
-				if (damaButton.isSelected()) {
-					damaButton.setIcon(
-							new ImageIcon(getClass().getClassLoader()
-									.getResource("D-highlight.png")));
-				} else {
-					damaButton.setIcon(
-							new ImageIcon(getClass().getClassLoader()
-									.getResource("D.png")));
-				}
-			} else if (value == 11) {
-				if (damaButton.isSelected()) {
-					damaButton.setIcon(
-							new ImageIcon(getClass().getClassLoader()
-									.getResource("D-dama-highlight.png")));
-				} else {
-					damaButton.setIcon(
-							new ImageIcon(getClass().getClassLoader()
-									.getResource("D-dama.png")));
-				}
-			}
-		}
-			
+		t.run();
 	}
 }

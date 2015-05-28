@@ -10,17 +10,15 @@ import model.Coordinate;
 import model.Game;
 
 public class DamaService {
+	/** Connection variable. */
 	public static Connection conn = null;
-	static {
-		try {
-			conn = DriverManager.getConnection(
-					"jdbc:oracle:thin:@db.inf.unideb.hu:1521:ora11g",
-					"H_HG8H7I", "kassai");
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-	}
-
+//	static {
+//		
+//	}
+	
+	/**
+	 * Closes databse connection. 
+	 */
 	public void closeDatabaseConnection() {
 		try {
 			conn.close();
@@ -36,6 +34,13 @@ public class DamaService {
 	 *            Game state.
 	 */
 	public void downloadGameState(Game game) {
+		try {
+			conn = DriverManager.getConnection(
+					"jdbc:oracle:thin:@db.inf.unideb.hu:1521:ora11g",
+					"H_HG8H7I", "kassai");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		final String SELECTp1 = "SELECT * FROM DAMAGAME where playername = '"
 				+ game.getPlayerA().getName() + "'";
 		final String SELECTp2 = "SELECT * FROM DAMAGAME where playername = '"
@@ -80,6 +85,13 @@ public class DamaService {
 	 * Uploads game state to database.
 	 */
 	public void uploadGameState(Game game) {
+		try {
+			conn = DriverManager.getConnection(
+					"jdbc:oracle:thin:@db.inf.unideb.hu:1521:ora11g",
+					"H_HG8H7I", "kassai");
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
 		final String INSERT = "INSERT INTO DAMAGAME VALUES (?, ?, ?, ?, ?)";
 		PreparedStatement pstmtInsert;
 
