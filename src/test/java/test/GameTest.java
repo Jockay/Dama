@@ -581,7 +581,7 @@ public class GameTest {
 							{ 0, 3, 0, 3, 0, 3, 0, 3 }, // 6
 							{ 3, 0, 3, 0, 3, 11, 3, 0 }  // 7
 					});
-				assertEquals(new Coordinate(3, 1), 
+				assertEquals(new Coordinate(2, 0), 
 					g.isHitable(new Coordinate(7, 5), new Coordinate(3, 1)));
 	}
 	
