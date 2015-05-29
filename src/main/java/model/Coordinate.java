@@ -12,7 +12,12 @@ public class Coordinate {
 	/** <code>Y</code> coordinate. */
 	private int y;
 
-	/** Class constructor*/
+	/**
+	 * Class constructor.
+	 * 
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 */
 	public Coordinate(int x, int y) {
 		super();
 		this.x = x;
