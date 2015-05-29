@@ -1,5 +1,11 @@
 package model;
 
+/**
+ * Class for game table coordinates.
+ * 
+ * @author Jockay
+ *
+ */
 public class Coordinate {
 	/** <code>X</code> coodrinate. */
 	private int x;
@@ -59,7 +65,8 @@ public class Coordinate {
 	
 	/**
 	 * Returns true if the parameter object is equals to <code>this</code> object.
-	 * @return true if the parameter object equalst to <code>this</code> object
+	 * 
+	 * @return true if the parameter object equals to <code>this</code> object
 	 */
 	@Override
 	public boolean equals(Object obj) {
