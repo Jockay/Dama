@@ -157,7 +157,7 @@ public class GameTest {
 				{ 3, 0, 3, 0, 3, 0, 3, 0 },
 				{ 0, 3, 0, 3, 0, 3, 0, 3 },
 				{ 3, 0, 3, 0, 3, 0, 3, 0 } });
-		assertEquals(null, g.isHitable(new Coordinate(1, 1), new Coordinate(0, 0)));
+		assertEquals(null, g.ifHitable(new Coordinate(1, 1), new Coordinate(0, 0)));
 		
 		g.setTable(new int[][] {
 				{ 0, 3, 0, 3, 0, 3, 0, 3 },
@@ -168,7 +168,7 @@ public class GameTest {
 				{ 3, 0, 3, 0, 3, 0, 3, 0 },
 				{ 0, 3, 0, 3, 0, 3, 2, 3 },
 				{ 3, 0, 3, 0, 3, 0, 3, 1 } });
-		assertEquals(null, g.isHitable(new Coordinate(1, 1), new Coordinate(0, 0)));
+		assertEquals(null, g.ifHitable(new Coordinate(1, 1), new Coordinate(0, 0)));
 		
 		g.setTable(new int[][] {
 				{ 0, 3, 0, 3, 0, 3, 0, 3 },
@@ -180,7 +180,7 @@ public class GameTest {
 				{ 0, 3, 0, 3, 0, 3, 0, 3 },
 				{ 3, 0, 3, 0, 3, 0, 3, 0 } });
 		assertEquals(new Coordinate(0, 0), 
-				g.isHitable(new Coordinate(2, 2), new Coordinate(1, 1)));
+				g.ifHitable(new Coordinate(2, 2), new Coordinate(1, 1)));
 		
 		g.setTable(new int[][] {
 				{ 0, 3, 0, 3, 0, 3, 0, 3 },
@@ -192,7 +192,7 @@ public class GameTest {
 				{ 0, 3, 0, 3, 0, 3, 0, 3 },
 				{ 3, 0, 3, 0, 3, 0, 3, 0 } });
 		assertEquals(new Coordinate(0, 4), 
-				g.isHitable(new Coordinate(2, 2), new Coordinate(1, 3)));
+				g.ifHitable(new Coordinate(2, 2), new Coordinate(1, 3)));
 		
 		g.setTable(new int[][] {
 			   // 0  1  2  3  4  5  6  7 
@@ -206,7 +206,7 @@ public class GameTest {
 				{ 3, 0, 3, 0, 3, 0, 3, 0 }  // 7
 		});  
 		assertEquals(new Coordinate(7, 5), 
-				g.isHitable(new Coordinate(5, 3), new Coordinate(6, 4)));
+				g.ifHitable(new Coordinate(5, 3), new Coordinate(6, 4)));
 		
 		g.setTable(new int[][] {
 				   // 0  1  2  3  4  5  6  7 
@@ -220,7 +220,7 @@ public class GameTest {
 					{ 3, 0, 3, 0, 3, 0, 3, 0 }  // 7
 			});  
 		assertEquals(new Coordinate(7, 1), 
-				g.isHitable(new Coordinate(5, 3), new Coordinate(6, 2)));
+				g.ifHitable(new Coordinate(5, 3), new Coordinate(6, 2)));
 		
 		g.setTable(new int[][] {
 				{ 2, 3, 0, 3, 0, 3, 0, 3 },
@@ -232,7 +232,7 @@ public class GameTest {
 				{ 0, 3, 0, 3, 0, 3, 0, 3 },
 				{ 3, 0, 3, 0, 3, 0, 3, 0 } });
 		assertEquals(null, 
-				g.isHitable(new Coordinate(2, 2), new Coordinate(1, 1)));
+				g.ifHitable(new Coordinate(2, 2), new Coordinate(1, 1)));
 			
 		g.setTable(new int[][] {
 				{ 0, 3, 0, 3, 2, 3, 0, 3 },
@@ -244,7 +244,7 @@ public class GameTest {
 				{ 0, 3, 0, 3, 0, 3, 0, 3 },
 				{ 3, 0, 3, 0, 3, 0, 3, 0 } });
 		assertEquals(null, 
-				g.isHitable(new Coordinate(2, 2), new Coordinate(1, 3)));
+				g.ifHitable(new Coordinate(2, 2), new Coordinate(1, 3)));
 		
 		g.setTable(new int[][] {
 				   // 0  1  2  3  4  5  6  7 
@@ -258,7 +258,7 @@ public class GameTest {
 					{ 3, 0, 3, 0, 3, 1, 3, 0 }  // 7
 			});
 		assertEquals(null, 
-				g.isHitable(new Coordinate(5, 3), new Coordinate(6, 4)));
+				g.ifHitable(new Coordinate(5, 3), new Coordinate(6, 4)));
 		
 		g.setTable(new int[][] {
 				   // 0  1  2  3  4  5  6  7 
@@ -272,7 +272,7 @@ public class GameTest {
 					{ 3, 0, 3, 0, 3, 0, 3, 0 }  // 7
 			});
 		assertEquals(null, 
-				g.isHitable(new Coordinate(4, 6), new Coordinate(5, 7)));
+				g.ifHitable(new Coordinate(4, 6), new Coordinate(5, 7)));
 		
 		g.setTable(new int[][] {
 				   // 0  1  2  3  4  5  6  7 
@@ -286,7 +286,7 @@ public class GameTest {
 					{ 3, 0, 3, 0, 3, 0, 3, 0 }  // 7
 			});
 		assertEquals(null, 
-				g.isHitable(new Coordinate(4, 4), new Coordinate(3, 5)));
+				g.ifHitable(new Coordinate(4, 4), new Coordinate(3, 5)));
 		
 		g.setTable(new int[][] {
 				   // 0  1  2  3  4  5  6  7 
@@ -300,7 +300,7 @@ public class GameTest {
 					{ 3, 0, 3, 0, 3, 0, 3, 0 }  // 7
 			});
 		assertEquals(null, 
-				g.isHitable(new Coordinate(6, 0), new Coordinate(4, 6)));
+				g.ifHitable(new Coordinate(6, 0), new Coordinate(4, 6)));
 		
 		g.setTable(new int[][] {
 				    { 2, 3, 2, 3, 2, 3, 2, 3  },
@@ -313,7 +313,7 @@ public class GameTest {
 					{ 3, 1, 3, 1, 3, 1, 3, 1  }
 			});
 		assertEquals(new Coordinate(3, 5), 
-				g.isHitable(new Coordinate(1, 3), new Coordinate(2, 4)));
+				g.ifHitable(new Coordinate(1, 3), new Coordinate(2, 4)));
 		
 		// alja fele jobbra
 		g.setTable(new int[][] {
@@ -327,7 +327,7 @@ public class GameTest {
 				{ 3, 0, 3, 0, 3, 0, 3, 0  }
 		});
 		assertEquals(new Coordinate(7, 7), 
-			g.isHitable(new Coordinate(0, 0), new Coordinate(6, 6)));
+			g.ifHitable(new Coordinate(0, 0), new Coordinate(6, 6)));
 		
 		g.setTable(new int[][] {
 			    { 11, 3, 0, 3, 0, 3, 0, 3  },
@@ -340,7 +340,7 @@ public class GameTest {
 				{ 3, 0, 3, 0, 3, 0, 3, 0  }
 		});
 		assertEquals(new Coordinate(3, 3), 
-			g.isHitable(new Coordinate(0, 0), new Coordinate(2, 2)));
+			g.ifHitable(new Coordinate(0, 0), new Coordinate(2, 2)));
 		
 		g.setTable(new int[][] {
 			    { 2, 3, 2, 3, 0, 3, 0, 3  },
@@ -353,7 +353,7 @@ public class GameTest {
 				{ 3, 0, 3, 0, 3, 0, 3, 0  }
 		});
 		assertEquals(null,
-			g.isHitable(new Coordinate(1, 1), new Coordinate(0, 0)));
+			g.ifHitable(new Coordinate(1, 1), new Coordinate(0, 0)));
 		
 		// DÁMA
 		// alja fele jobbra
@@ -368,7 +368,7 @@ public class GameTest {
 				{ 3, 0, 3, 0, 3, 0, 3, 2  }
 		});
 		assertEquals(null, 
-			g.isHitable(new Coordinate(0, 0), new Coordinate(7, 7)));
+			g.ifHitable(new Coordinate(0, 0), new Coordinate(7, 7)));
 		
 		// alja fele balra
 		g.setTable(new int[][] {
@@ -382,7 +382,7 @@ public class GameTest {
 				{ 3, 0, 3, 0, 3, 0, 3, 0  }
 		});
 		assertEquals(new Coordinate(3, 3), 
-			g.isHitable(new Coordinate(0, 6), new Coordinate(2, 4)));
+			g.ifHitable(new Coordinate(0, 6), new Coordinate(2, 4)));
 		
 		// alja fele balra
 		g.setTable(new int[][] {
@@ -396,7 +396,7 @@ public class GameTest {
 				{ 3, 0, 3, 0, 3, 0, 3, 0  }
 		});
 		assertEquals(new Coordinate(6, 0), 
-			g.isHitable(new Coordinate(0, 6), new Coordinate(5, 1)));
+			g.ifHitable(new Coordinate(0, 6), new Coordinate(5, 1)));
 		
 		g.setTable(new int[][] {
 			    { 0, 3, 0, 3, 0, 3, 0, 3  },
@@ -409,7 +409,7 @@ public class GameTest {
 				{ 3, 0, 3, 1, 3, 1, 3, 0  }
 		});
 		assertEquals(null,
-			g.isHitable(new Coordinate(6, 4), new Coordinate(7, 3)));
+			g.ifHitable(new Coordinate(6, 4), new Coordinate(7, 3)));
 		
 		// teteje fele jobbra
 		g.setTable(new int[][] {
@@ -424,7 +424,7 @@ public class GameTest {
 					{ 3, 11, 3, 0, 3, 0, 3, 0 }  // 7
 			});
 		assertEquals(new Coordinate(1, 7), 
-			g.isHitable(new Coordinate(7, 1), new Coordinate(2, 6)));
+			g.ifHitable(new Coordinate(7, 1), new Coordinate(2, 6)));
 		
 		// teteje fele balra
 		g.setTable(new int[][] {
@@ -439,7 +439,7 @@ public class GameTest {
 					{ 3, 0, 3, 0, 3, 0, 3, 11 }  // 7
 			});
 		assertEquals(new Coordinate(0, 0), 
-			g.isHitable(new Coordinate(7, 7), new Coordinate(1, 1)));
+			g.ifHitable(new Coordinate(7, 7), new Coordinate(1, 1)));
 		
 		//P2
 		// alja fele jobbra
@@ -454,7 +454,7 @@ public class GameTest {
 						{ 3, 0, 3, 0, 3, 0, 3, 0  }
 				});
 				assertEquals(new Coordinate(7, 7), 
-					g.isHitable(new Coordinate(0, 0), new Coordinate(6, 6)));
+					g.ifHitable(new Coordinate(0, 0), new Coordinate(6, 6)));
 				
 				// alja fele jobbra
 				g.setTable(new int[][] {
@@ -468,7 +468,7 @@ public class GameTest {
 						{ 3, 0, 3, 0, 3, 0, 3, 1  }
 				});
 				assertEquals(null, 
-					g.isHitable(new Coordinate(0, 0), new Coordinate(7, 7)));
+					g.ifHitable(new Coordinate(0, 0), new Coordinate(7, 7)));
 				
 				// alja fele balra
 				g.setTable(new int[][] {
@@ -482,7 +482,7 @@ public class GameTest {
 						{ 3, 0, 3, 0, 3, 0, 3, 0  }
 				});
 				assertEquals(new Coordinate(3, 3), 
-					g.isHitable(new Coordinate(0, 6), new Coordinate(2, 4)));
+					g.ifHitable(new Coordinate(0, 6), new Coordinate(2, 4)));
 				
 				// alja fele balra
 				g.setTable(new int[][] {
@@ -496,7 +496,7 @@ public class GameTest {
 						{ 3, 0, 3, 0, 3, 0, 3, 0  }
 				});
 				assertEquals(new Coordinate(6, 0), 
-					g.isHitable(new Coordinate(0, 6), new Coordinate(5, 1)));
+					g.ifHitable(new Coordinate(0, 6), new Coordinate(5, 1)));
 				
 				// teteje fele jobbra
 				g.setTable(new int[][] {
@@ -511,7 +511,7 @@ public class GameTest {
 							{ 3, 21, 3, 0, 3, 0, 3, 0 }  // 7
 					});
 				assertEquals(new Coordinate(1, 7), 
-					g.isHitable(new Coordinate(7, 1), new Coordinate(2, 6)));
+					g.ifHitable(new Coordinate(7, 1), new Coordinate(2, 6)));
 				
 				// teteje fele balra
 				g.setTable(new int[][] {
@@ -526,7 +526,7 @@ public class GameTest {
 							{ 3, 0, 3, 0, 3, 0, 3, 21 }  // 7
 					});
 				assertEquals(new Coordinate(0, 0), 
-					g.isHitable(new Coordinate(7, 7), new Coordinate(1, 1)));
+					g.ifHitable(new Coordinate(7, 7), new Coordinate(1, 1)));
 				
 				g.setTable(new int[][] {
 						   // 0  1  2  3  4  5  6  7 
@@ -540,7 +540,7 @@ public class GameTest {
 							{ 3, 0, 3, 0, 3, 0, 3, 21 }  // 7
 					});
 				assertEquals(new Coordinate(3, 5), 
-					g.isHitable(new Coordinate(0, 2), new Coordinate(1, 1)));
+					g.ifHitable(new Coordinate(0, 2), new Coordinate(1, 1)));
 				
 				g.setTable(new int[][] {
 						   // 0  1  2  3  4  5  6  7 
@@ -554,7 +554,7 @@ public class GameTest {
 							{ 3, 0, 3, 0, 3, 0, 3, 21 }  // 7
 					});
 				assertEquals(null, 
-					g.isHitable(new Coordinate(0, 2), new Coordinate(1, 5)));
+					g.ifHitable(new Coordinate(0, 2), new Coordinate(1, 5)));
 				
 				g.setTable(new int[][] {
 						   // 0  1  2  3  4  5  6  7 
@@ -568,7 +568,7 @@ public class GameTest {
 							{ 3, 0, 3, 0, 3, 0, 3, 21 }  // 7
 					});
 				assertEquals(new Coordinate(4, 6), 
-					g.isHitable(new Coordinate(0, 2), new Coordinate(3, 5)));
+					g.ifHitable(new Coordinate(0, 2), new Coordinate(3, 5)));
 				
 				g.setTable(new int[][] {
 						   // 0  1  2  3  4  5  6  7 
@@ -582,7 +582,7 @@ public class GameTest {
 							{ 3, 0, 3, 0, 3, 11, 3, 0 }  // 7
 					});
 				assertEquals(new Coordinate(2, 0), 
-					g.isHitable(new Coordinate(7, 5), new Coordinate(3, 1)));
+					g.ifHitable(new Coordinate(7, 5), new Coordinate(3, 1)));
 	}
 	
 	

@@ -109,7 +109,7 @@ public class DamaGUI extends JFrame {
 			Coordinate target = null;
 			for(Coordinate ac : g.getActualPlayer().getPlacedPieces()) {
 				for(Coordinate nac : g.getNotActualPlayer().getPlacedPieces()) {
-					if((target = g.isHitable(ac, nac)) != null) {
+					if((target = g.ifHitable(ac, nac)) != null) {
 						
 						/*System.out.println("before:");
 						pgt();
@@ -175,7 +175,7 @@ public class DamaGUI extends JFrame {
 		this.buttonSize = 56;
 		this.offset = 25;
 		g = new Game();
-		g.setTable(new int[][] { 
+		/*g.setTable(new int[][] { 
 				{ 21, 3, 21, 3, 21, 3, 21, 3 },
 				{ 3, 2, 3, 2, 3, 2, 3, 2 },
 				{ 2, 3, 2, 3, 2, 3, 2, 3 },
@@ -185,7 +185,7 @@ public class DamaGUI extends JFrame {
 				{ 1, 3, 1, 3, 1, 3, 1, 3 },
 				{ 3, 11, 3, 11, 3, 11, 3, 11 } }
 				
-				);
+				);*/
 		ds = new DamaService();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
