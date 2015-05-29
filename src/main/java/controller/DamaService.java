@@ -17,7 +17,7 @@ public class DamaService {
 //	}
 	
 	/**
-	 * Closes databse connection. 
+	 * Closes database connection. 
 	 */
 	public void closeDatabaseConnection() {
 		try {
